@@ -67,11 +67,11 @@ export async function PATCH(req: NextRequest,
 
         const user = await getCurrentUser();
 
-        const body = req.json();
+        const body = await req.json();
 
         const { resumeId } = await params;
 
-        const updatedResume = resumeModel.findOneAndUpdate({
+        const updatedResume = await resumeModel.findOneAndUpdate({
             _id : resumeId,
             user_id : user.userId
         } , 
@@ -115,3 +115,42 @@ export async function PATCH(req: NextRequest,
 
 
 }
+
+export async function DELETE(req: NextRequest,
+    { params }: { params: Promise<{ resumeId: string }> }) {
+
+    try {
+        await connectToDb();
+        const user = await getCurrentUser();
+        const { resumeId } = await params;
+
+        const deletedResume = await resumeModel.findOneAndDelete({
+            _id: resumeId,
+            user_id: user.userId
+        });
+
+        if (!deletedResume) {
+            return NextResponse.json<ApiResponse>({
+                success: false,
+                message: 'Resume not found or unauthorized',
+            }, {
+                status: 404
+            });
+        }
+
+        return NextResponse.json<ApiResponse>({
+            success: true,
+            message: 'Resume deleted successfully',
+        });
+
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json<ApiResponse>({
+            success: false,
+            message: 'Something went wrong',
+        }, {
+            status: 500
+        });
+    }
+}
+

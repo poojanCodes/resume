@@ -1,26 +1,144 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────
+   Design Tokens — Color Palette
+   We use CSS custom properties (variables) so
+   any component can reference them. This is the
+   single source of truth for our color system.
+───────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand */
+  --color-brand-from: #2563eb;   /* blue-600 */
+  --color-brand-to:   #4f46e5;   /* indigo-600 */
+
+  /* Surfaces */
+  --color-bg:         #020817;   /* slate-950 — page background */
+  --color-surface:    #0f172a;   /* slate-900 — card/panel */
+  --color-surface-2:  #1e293b;   /* slate-800 — elevated surface */
+  --color-border:     #1e293b;   /* slate-800 */
+  --color-border-2:   #334155;   /* slate-700 */
+
+  /* Text */
+  --color-text:       #f1f5f9;   /* slate-100 */
+  --color-text-muted: #94a3b8;   /* slate-400 */
+  --color-text-dim:   #475569;   /* slate-600 */
+
+  /* Semantic */
+  --color-success:    #10b981;   /* emerald-500 */
+  --color-error:      #ef4444;   /* red-500 */
+  --color-warning:    #f59e0b;   /* amber-500 */
+
+  /* Glow radii */
+  --glow-blue:   rgba(37, 99, 235, 0.12);
+  --glow-indigo: rgba(79, 70, 229, 0.12);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─────────────────────────────────────────────
+   Base Reset & Typography
+───────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Inter", "Geist", system-ui, sans-serif;
+}
+
+/* ─────────────────────────────────────────────
+   Custom Scrollbar (webkit browsers)
+───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-2);
+}
+
+/* ─────────────────────────────────────────────
+   Utility: Gradient text
+───────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #60a5fa, #818cf8, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-brand {
+  background: linear-gradient(135deg, var(--color-brand-from), var(--color-brand-to));
+}
+
+/* ─────────────────────────────────────────────
+   Utility: Glass card effect
+───────────────────────────────────────────── */
+.glass {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+/* ─────────────────────────────────────────────
+   Animations
+───────────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.3); }
+  50%       { box-shadow: 0 0 0 8px rgba(79, 70, 229, 0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-fade-in     { animation: fade-in 0.35s ease both; }
+.animate-slide-left  { animation: slide-in-left 0.35s ease both; }
+.animate-pulse-glow  { animation: pulse-glow 2s infinite; }
+.animate-spin        { animation: spin 0.75s linear infinite; }
+
+/* ─────────────────────────────────────────────
+   Print styles — used by the PDF download page
+   Everything is hidden except #resume-print-area
+───────────────────────────────────────────── */
+@media print {
+  body { background: white !important; color: black !important; }
+  .no-print { display: none !important; }
+  #resume-print-area {
+    display: block !important;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  @page {
+    size: A4;
+    margin: 16mm 16mm;
+  }
 }
