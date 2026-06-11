@@ -11,7 +11,7 @@ export async function POST(req:NextRequest){
 
         await connectToDb();
 
-        const userId = await getCurrentUser();
+        const {userId} = await getCurrentUser();
 
         const newResume = await resumeModel.create({
             user_id : userId ,
